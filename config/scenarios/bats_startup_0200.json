@@ -1,0 +1,480 @@
+{
+  "name": "bats_startup_0200",
+  "description": "2:00 AM extended-hours startup: BATS Logon rejected \u2014 SequenceReset sent NewSeqNo=1 but counterparty BZX_GW expects next sequence 2450 from yesterday's close; 8 overnight GTC orders blocked including 2 institutional with active SLA; IEX extended-hours session healthy; NYSE and ARCA offline until 04:00 ET; 2 crypto-adjacent ETF orders (BITO, GBTC) flagged as symbol_not_loaded on extended-hours ticker table.",
+  "simulated_time": "02:05 ET",
+  "sessions": [
+    {
+      "venue": "BATS",
+      "session_id": "BATS-PROD-01",
+      "sender_comp_id": "FIRM_PROD",
+      "target_comp_id": "BZX_GW",
+      "fix_version": "FIX.4.2",
+      "status": "down",
+      "last_sent_seq": 2451,
+      "last_recv_seq": 2449,
+      "expected_recv_seq": 2450,
+      "last_heartbeat": "2026-03-27T22:45:10",
+      "latency_ms": 0,
+      "host": "bats-gateway.prod.internal",
+      "port": 4003,
+      "error": "SequenceReset (35=4) rejected: NewSeqNo=1 invalid \u2014 counterparty BZX_GW expects MsgSeqNum 2450; correct NewSeqNo to 2450 and resend",
+      "connected_since": null
+    },
+    {
+      "venue": "NYSE",
+      "session_id": "NYSE-PROD-01",
+      "sender_comp_id": "FIRM_PROD",
+      "target_comp_id": "NYSE_GW",
+      "fix_version": "FIX.4.2",
+      "status": "logged_out",
+      "last_sent_seq": 12450,
+      "last_recv_seq": 12450,
+      "expected_recv_seq": 12451,
+      "last_heartbeat": "2026-03-27T20:00:05",
+      "latency_ms": 0,
+      "host": "nyse-gateway.prod.internal",
+      "port": 4001,
+      "error": "Session offline \u2014 NYSE does not support extended hours; available from 04:00 ET",
+      "connected_since": null
+    },
+    {
+      "venue": "ARCA",
+      "session_id": "ARCA-PROD-01",
+      "sender_comp_id": "FIRM_PROD",
+      "target_comp_id": "ARCA_GW",
+      "fix_version": "FIX.4.2",
+      "status": "logged_out",
+      "last_sent_seq": 4582,
+      "last_recv_seq": 4582,
+      "expected_recv_seq": 4583,
+      "last_heartbeat": "2026-03-27T20:00:08",
+      "latency_ms": 0,
+      "host": "arca-gateway.prod.internal",
+      "port": 4002,
+      "error": "Session offline \u2014 ARCA extended hours not enabled; available from 04:00 ET",
+      "connected_since": null
+    },
+    {
+      "venue": "IEX",
+      "session_id": "IEX-PROD-01",
+      "sender_comp_id": "FIRM_PROD",
+      "target_comp_id": "IEXG_GW",
+      "fix_version": "FIX.4.2",
+      "status": "active",
+      "last_sent_seq": 890,
+      "last_recv_seq": 890,
+      "expected_recv_seq": 891,
+      "last_heartbeat": "2026-03-28T02:04:55",
+      "latency_ms": 8,
+      "host": "iex-gateway.prod.internal",
+      "port": 4004,
+      "error": null,
+      "connected_since": "2026-03-28T00:00:05"
+    }
+  ],
+  "orders": [
+    {
+      "order_id": "ORD-20260328-201",
+      "cl_ord_id": "CLO-201",
+      "symbol": "TSLA",
+      "cusip": "88160R101",
+      "side": "buy",
+      "quantity": 1000,
+      "order_type": "limit",
+      "price": 172.5,
+      "stop_px": null,
+      "venue": "BATS",
+      "client_name": "Maple Capital",
+      "is_institutional": true,
+      "sla_minutes": 15,
+      "status": "stuck",
+      "flags": [
+        "venue_down"
+      ],
+      "filled_quantity": 0,
+      "fix_messages": [],
+      "created_at": "2026-03-27T22:30:00",
+      "updated_at": "2026-03-27T22:30:00"
+    },
+    {
+      "order_id": "ORD-20260328-202",
+      "cl_ord_id": "CLO-202",
+      "symbol": "NVDA",
+      "cusip": "67066G104",
+      "side": "sell",
+      "quantity": 500,
+      "order_type": "market",
+      "price": null,
+      "stop_px": null,
+      "venue": "BATS",
+      "client_name": "Rowan Partners",
+      "is_institutional": true,
+      "sla_minutes": 20,
+      "status": "stuck",
+      "flags": [
+        "venue_down"
+      ],
+      "filled_quantity": 0,
+      "fix_messages": [],
+      "created_at": "2026-03-27T22:45:00",
+      "updated_at": "2026-03-27T22:45:00"
+    },
+    {
+      "order_id": "ORD-20260328-203",
+      "cl_ord_id": "CLO-203",
+      "symbol": "AAPL",
+      "cusip": "037833100",
+      "side": "buy",
+      "quantity": 2000,
+      "order_type": "limit",
+      "price": 211.0,
+      "stop_px": null,
+      "venue": "BATS",
+      "client_name": "Sycamore Group",
+      "is_institutional": true,
+      "sla_minutes": 25,
+      "status": "stuck",
+      "flags": [
+        "venue_down"
+      ],
+      "filled_quantity": 0,
+      "fix_messages": [],
+      "created_at": "2026-03-27T23:00:00",
+      "updated_at": "2026-03-27T23:00:00"
+    },
+    {
+      "order_id": "ORD-20260328-204",
+      "cl_ord_id": "CLO-204",
+      "symbol": "MSFT",
+      "cusip": "594918104",
+      "side": "buy",
+      "quantity": 800,
+      "order_type": "limit",
+      "price": 418.5,
+      "stop_px": null,
+      "venue": "BATS",
+      "client_name": "Birch Funds",
+      "is_institutional": true,
+      "sla_minutes": 30,
+      "status": "stuck",
+      "flags": [
+        "venue_down"
+      ],
+      "filled_quantity": 0,
+      "fix_messages": [],
+      "created_at": "2026-03-27T23:15:00",
+      "updated_at": "2026-03-27T23:15:00"
+    },
+    {
+      "order_id": "ORD-20260328-205",
+      "cl_ord_id": "CLO-205",
+      "symbol": "AMZN",
+      "cusip": "023135106",
+      "side": "sell",
+      "quantity": 600,
+      "order_type": "limit",
+      "price": 184.0,
+      "stop_px": null,
+      "venue": "BATS",
+      "client_name": "Cedar Trading",
+      "is_institutional": false,
+      "sla_minutes": null,
+      "status": "stuck",
+      "flags": [
+        "venue_down"
+      ],
+      "filled_quantity": 0,
+      "fix_messages": [],
+      "created_at": "2026-03-27T23:30:00",
+      "updated_at": "2026-03-27T23:30:00"
+    },
+    {
+      "order_id": "ORD-20260328-206",
+      "cl_ord_id": "CLO-206",
+      "symbol": "GOOGL",
+      "cusip": "02079K305",
+      "side": "buy",
+      "quantity": 400,
+      "order_type": "limit",
+      "price": 174.0,
+      "stop_px": null,
+      "venue": "BATS",
+      "client_name": "Elm Securities",
+      "is_institutional": false,
+      "sla_minutes": null,
+      "status": "stuck",
+      "flags": [
+        "venue_down"
+      ],
+      "filled_quantity": 0,
+      "fix_messages": [],
+      "created_at": "2026-03-27T23:45:00",
+      "updated_at": "2026-03-27T23:45:00"
+    },
+    {
+      "order_id": "ORD-20260328-207",
+      "cl_ord_id": "CLO-207",
+      "symbol": "META",
+      "cusip": "30303M102",
+      "side": "sell",
+      "quantity": 1200,
+      "order_type": "market",
+      "price": null,
+      "stop_px": null,
+      "venue": "BATS",
+      "client_name": "Firm Prop Desk",
+      "is_institutional": false,
+      "sla_minutes": null,
+      "status": "stuck",
+      "flags": [
+        "venue_down"
+      ],
+      "filled_quantity": 0,
+      "fix_messages": [],
+      "created_at": "2026-03-28T00:00:00",
+      "updated_at": "2026-03-28T00:00:00"
+    },
+    {
+      "order_id": "ORD-20260328-208",
+      "cl_ord_id": "CLO-208",
+      "symbol": "AMD",
+      "cusip": "007903107",
+      "side": "buy",
+      "quantity": 3000,
+      "order_type": "limit",
+      "price": 42.0,
+      "stop_px": null,
+      "venue": "BATS",
+      "client_name": "Aspen Asset Management",
+      "is_institutional": true,
+      "sla_minutes": 30,
+      "status": "stuck",
+      "flags": [
+        "venue_down"
+      ],
+      "filled_quantity": 0,
+      "fix_messages": [],
+      "created_at": "2026-03-28T00:15:00",
+      "updated_at": "2026-03-28T00:15:00"
+    },
+    {
+      "order_id": "ORD-20260328-209",
+      "cl_ord_id": "CLO-209",
+      "symbol": "SPY",
+      "cusip": "78462F103",
+      "side": "buy",
+      "quantity": 500,
+      "order_type": "limit",
+      "price": 531.0,
+      "stop_px": null,
+      "venue": "IEX",
+      "client_name": "Willow Investments",
+      "is_institutional": true,
+      "sla_minutes": 20,
+      "status": "new",
+      "flags": [],
+      "filled_quantity": 0,
+      "fix_messages": [],
+      "created_at": "2026-03-28T01:00:00",
+      "updated_at": "2026-03-28T01:00:00"
+    },
+    {
+      "order_id": "ORD-20260328-210",
+      "cl_ord_id": "CLO-210",
+      "symbol": "QQQ",
+      "cusip": "46090E103",
+      "side": "buy",
+      "quantity": 300,
+      "order_type": "limit",
+      "price": 452.0,
+      "stop_px": null,
+      "venue": "IEX",
+      "client_name": "Maple Capital",
+      "is_institutional": true,
+      "sla_minutes": 15,
+      "status": "new",
+      "flags": [],
+      "filled_quantity": 0,
+      "fix_messages": [],
+      "created_at": "2026-03-28T01:15:00",
+      "updated_at": "2026-03-28T01:15:00"
+    },
+    {
+      "order_id": "ORD-20260328-211",
+      "cl_ord_id": "CLO-211",
+      "symbol": "MSFT",
+      "cusip": "594918104",
+      "side": "sell",
+      "quantity": 200,
+      "order_type": "limit",
+      "price": 422.0,
+      "stop_px": null,
+      "venue": "IEX",
+      "client_name": "Birch Funds",
+      "is_institutional": true,
+      "sla_minutes": 30,
+      "status": "new",
+      "flags": [],
+      "filled_quantity": 0,
+      "fix_messages": [],
+      "created_at": "2026-03-28T01:30:00",
+      "updated_at": "2026-03-28T01:30:00"
+    },
+    {
+      "order_id": "ORD-20260328-212",
+      "cl_ord_id": "CLO-212",
+      "symbol": "AAPL",
+      "cusip": "037833100",
+      "side": "buy",
+      "quantity": 100,
+      "order_type": "limit",
+      "price": 213.5,
+      "stop_px": null,
+      "venue": "IEX",
+      "client_name": "Cedar Trading",
+      "is_institutional": false,
+      "sla_minutes": null,
+      "status": "new",
+      "flags": [],
+      "filled_quantity": 0,
+      "fix_messages": [],
+      "created_at": "2026-03-28T01:45:00",
+      "updated_at": "2026-03-28T01:45:00"
+    },
+    {
+      "order_id": "ORD-20260328-213",
+      "cl_ord_id": "CLO-213",
+      "symbol": "BITO",
+      "cusip": "09748H104",
+      "side": "buy",
+      "quantity": 5000,
+      "order_type": "market",
+      "price": null,
+      "stop_px": null,
+      "venue": "IEX",
+      "client_name": "Firm Prop Desk",
+      "is_institutional": false,
+      "sla_minutes": null,
+      "status": "new",
+      "flags": [
+        "symbol_not_loaded"
+      ],
+      "filled_quantity": 0,
+      "fix_messages": [],
+      "created_at": "2026-03-28T01:50:00",
+      "updated_at": "2026-03-28T01:50:00"
+    },
+    {
+      "order_id": "ORD-20260328-214",
+      "cl_ord_id": "CLO-214",
+      "symbol": "GBTC",
+      "cusip": "389637509",
+      "side": "buy",
+      "quantity": 10000,
+      "order_type": "limit",
+      "price": 62.5,
+      "stop_px": null,
+      "venue": "IEX",
+      "client_name": "Firm Prop Desk",
+      "is_institutional": false,
+      "sla_minutes": null,
+      "status": "new",
+      "flags": [
+        "symbol_not_loaded"
+      ],
+      "filled_quantity": 0,
+      "fix_messages": [],
+      "created_at": "2026-03-28T01:55:00",
+      "updated_at": "2026-03-28T01:55:00"
+    }
+  ],
+  "title": "BATS Extended-Hours Startup",
+  "severity": "medium",
+  "estimated_minutes": 15,
+  "categories": [
+    "session",
+    "orders",
+    "reference_data"
+  ],
+  "difficulty": "intermediate",
+  "runbook": {
+    "narrative": "It's 2:00 AM. Extended-hours startup. BATS Logon was rejected \u2014 a SequenceReset sent NewSeqNo=1 but the counterparty BZX_GW expects next sequence 2450 from yesterday's close. 8 overnight GTC orders are blocked including 2 institutional with active SLA. NYSE and ARCA are offline until 04:00 ET. IEX extended-hours session is healthy. 2 crypto-adjacent ETF orders (BITO, GBTC) are flagged symbol_not_loaded because the extended-hours ticker table is not loaded.",
+    "steps": [
+      {
+        "step": 1,
+        "title": "Check All Sessions",
+        "narrative": "Confirm BATS is down, NYSE/ARCA are logged out (expected at this hour), IEX is active.",
+        "tool": "check_fix_sessions",
+        "tool_args": {},
+        "expected": "BATS down, NYSE/ARCA logged out, IEX active"
+      },
+      {
+        "step": 2,
+        "title": "Attempt BATS Reconnection",
+        "narrative": "Try reconnecting BATS. The sequence number mismatch may be resolved with a proper reset.",
+        "tool": "fix_session_issue",
+        "tool_args": {
+          "venue": "BATS",
+          "action": "reconnect"
+        },
+        "expected": "BATS reconnects or requires sequence reset"
+      },
+      {
+        "step": 3,
+        "title": "Reset BATS Sequence if Needed",
+        "narrative": "If reconnect fails due to sequence mismatch, reset_sequence to acknowledge NewSeqNo=1.",
+        "tool": "fix_session_issue",
+        "tool_args": {
+          "venue": "BATS",
+          "action": "reset_sequence"
+        },
+        "expected": "BATS sequence reset to 1, Logon should succeed"
+      },
+      {
+        "step": 4,
+        "title": "Load Missing ETF Symbols",
+        "narrative": "Load BITO and GBTC into the extended-hours reference store.",
+        "tool": "load_ticker",
+        "tool_args": {
+          "symbol": "BITO",
+          "cusip": "05557R500",
+          "name": "ProShares Bitcoin Strategy ETF",
+          "listing_exchange": "NYSE"
+        },
+        "expected": "BITO loaded"
+      },
+      {
+        "step": 5,
+        "title": "Verify Orders Released",
+        "narrative": "Check that the 8 blocked orders are now flowing after BATS reconnection and symbol loading.",
+        "tool": "query_orders",
+        "tool_args": {},
+        "expected": "All 8 orders unblocked, 2 institutional SLAs clear"
+      }
+    ]
+  },
+  "hints": {
+    "key_problems": [
+      "BATS SequenceReset mismatch \u2014 expected 2450, received 1 from yesterday's maintenance reset",
+      "8 GTC orders blocked including 2 institutional with active SLA timers",
+      "BITO and GBTC symbols not loaded in extended-hours ticker table"
+    ],
+    "flag_meanings": {
+      "venue_down": "BATS session is down due to sequence disagreement. Needs reconnection or sequence reset.",
+      "symbol_not_loaded": "Symbol is not in the reference store. Use load_ticker to add it."
+    },
+    "diagnosis_path": "Check sessions first. BATS reconnection is the primary fix. If the sequence mismatch persists, a reset_sequence is needed. Then load the missing ETF symbols.",
+    "common_mistakes": [
+      "Trying to reconnect without addressing the sequence reset \u2014 the exchange may reject the logon.",
+      "Resetting sequence without verifying it is the correct action \u2014 check that the exchange truly reset to 1 first.",
+      "Not loading both BITO and GBTC symbols before checking order release."
+    ]
+  },
+  "success_criteria": [
+    "BATS session is active",
+    "All 8 blocked orders are unblocked",
+    "BITO and GBTC symbols loaded in reference store",
+    "No venue_down or symbol_not_loaded flags remain",
+    "Institutional SLA timers clear"
+  ]
+}

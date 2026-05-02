@@ -1,0 +1,54 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "fix-mcp"
+version = "0.1.0"
+description = "An MCP server that gives AI agents trading operations intelligence via FIX protocol"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+keywords = ["mcp", "fix-protocol", "trading", "llm", "ai-agents"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Financial and Insurance Industry",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "mcp>=1.0.0",
+    "pydantic>=2.0.0",
+    "python-dateutil",
+    "aiohttp>=3.9",
+    "redis>=5.0",
+    "asyncpg>=0.29",
+    "pyyaml>=6.0",
+    "prometheus_client>=0.19",
+    "fastapi>=0.110.0",
+    "uvicorn[standard]>=0.29.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+]
+
+[project.scripts]
+fix-mcp = "fix_mcp.server:main_sync"
+fix-mcp-api = "fix_mcp.api:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/fix_mcp"]
+force-include = { "config" = "fix_mcp/config" }
+
+[tool.hatch.build]
+dev-mode-dirs = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"

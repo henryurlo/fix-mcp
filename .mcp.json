@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "fix-mcp": {
+      "command": "docker",
+      "args": ["compose", "run", "--rm", "-i", "--no-TTY", "mcp-server"],
+      "env": {
+        "SCENARIO": "morning_triage"
+      }
+    }
+  }
+}

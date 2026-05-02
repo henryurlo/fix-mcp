@@ -1,0 +1,354 @@
+@import "tailwindcss";
+
+/* ── FIX-MCP Mission Control Design System ─────────────────── */
+
+:root {
+  /* Core palette */
+  --bg-void: #f4f6f8;
+  --bg-base: #ffffff;
+  --bg-surface: #f9fafb;
+  --bg-elevated: #eef2f5;
+  --bg-hover: #e5eaef;
+  
+  /* Borders */
+  --border-dim: #d8dee6;
+  --border-base: #c1c9d3;
+  --border-bright: #8a97a8;
+  
+  /* Text */
+  --text-primary: #111827;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --text-dim: #94a3b8;
+  
+  /* Accent colors */
+  --cyan: #006f8f;
+  --cyan-dim: #006f8f18;
+  --green: #047857;
+  --green-dim: #04785718;
+  --orange: #c2410c;
+  --orange-dim: #c2410c18;
+  --red: #b91c1c;
+  --red-dim: #b91c1c18;
+  --purple: #5b21b6;
+  --purple-dim: #5b21b618;
+  --blue: #1d4ed8;
+  --blue-dim: #1d4ed818;
+  --amber: #b45309;
+  --amber-dim: #b4530918;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-base) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--border-base);
+  border-radius: 3px;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: var(--bg-void);
+  color: var(--text-primary);
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ── Glow effects ─────────────────────────────────────────── */
+
+@keyframes pulse-glow-cyan {
+  0%, 100% { box-shadow: 0 0 4px var(--cyan-dim); }
+  50% { box-shadow: 0 0 16px var(--cyan-dim), 0 0 32px #00d4ff10; }
+}
+
+@keyframes pulse-glow-green {
+  0%, 100% { box-shadow: 0 0 4px var(--green-dim); }
+  50% { box-shadow: 0 0 16px var(--green-dim), 0 0 32px #00ff8810; }
+}
+
+@keyframes pulse-glow-red {
+  0%, 100% { box-shadow: 0 0 8px var(--red-dim); }
+  50% { box-shadow: 0 0 20px var(--red-dim), 0 0 40px #ff336620; }
+}
+
+@keyframes pulse-glow-amber {
+  0%, 100% { box-shadow: 0 0 4px var(--amber-dim); }
+  50% { box-shadow: 0 0 14px var(--amber-dim), 0 0 28px #f59e0b10; }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes data-flow {
+  0% { stroke-dashoffset: 24; }
+  100% { stroke-dashoffset: 0; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-right {
+  from { opacity: 0; transform: translateX(-16px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.animate-fade-in { animation: fade-in 0.3s ease-out; }
+.animate-slide-up { animation: slide-up 0.4s ease-out; }
+.animate-slide-right { animation: slide-right 0.3s ease-out; }
+.animate-spin-slow { animation: spin-slow 3s linear infinite; }
+
+/* ── Glass panels ─────────────────────────────────────────── */
+
+.glass-panel {
+  background: var(--bg-base);
+  border: 1px solid var(--border-dim);
+  border-radius: 8px;
+}
+
+.glass-panel-bright {
+  background: var(--bg-base);
+  border: 1px solid var(--border-base);
+  border-radius: 8px;
+}
+
+/* ── Status indicators ────────────────────────────────────── */
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.status-dot.healthy { background: var(--green); box-shadow: 0 0 6px var(--green-dim); }
+.status-dot.degraded { background: var(--amber); box-shadow: 0 0 6px var(--amber-dim); animation: pulse-glow-amber 2s infinite; }
+.status-dot.down { background: var(--red); box-shadow: 0 0 8px var(--red-dim); animation: pulse-glow-red 1.5s infinite; }
+.status-dot.active { background: var(--cyan); box-shadow: 0 0 6px var(--cyan-dim); animation: pulse-glow-cyan 2s infinite; }
+
+/* ── Data table ───────────────────────────────────────────── */
+
+.data-grid {
+  display: grid;
+  gap: 1px;
+  background: var(--border-dim);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.data-grid > * {
+  background: var(--bg-surface);
+  padding: 8px 12px;
+}
+
+/* ── React Flow overrides ─────────────────────────────────── */
+
+.react-flow__background {
+  background: var(--bg-surface) !important;
+}
+
+.react-flow__controls {
+  border: 1px solid var(--border-dim) !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+}
+
+.react-flow__controls-button {
+  background: var(--bg-surface) !important;
+  border-bottom-color: var(--border-dim) !important;
+  fill: var(--text-secondary) !important;
+}
+
+.react-flow__controls-button:hover {
+  background: var(--bg-elevated) !important;
+}
+
+.react-flow__minimap {
+  background: var(--bg-surface) !important;
+  border: 1px solid var(--border-dim) !important;
+  border-radius: 8px !important;
+}
+
+/* ── Tab transitions ──────────────────────────────────────── */
+
+.tab-content-enter {
+  animation: fade-in 0.2s ease-out;
+}
+
+/* ── Scenario card ────────────────────────────────────────── */
+
+.scenario-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-dim);
+  border-radius: 8px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.scenario-card:hover {
+  border-color: var(--border-bright);
+  background: var(--bg-base);
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+}
+
+.scenario-card.active {
+  border-color: var(--cyan);
+  box-shadow: inset 3px 0 0 var(--cyan);
+}
+
+/* ── Input styles ─────────────────────────────────────────── */
+
+.input-base {
+  background: var(--bg-base);
+  border: 1px solid var(--border-dim);
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: var(--text-primary);
+  font-size: 14px;
+  transition: border-color 0.2s;
+  outline: none;
+  width: 100%;
+}
+
+.input-base:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 2px var(--cyan-dim);
+}
+
+.input-base::placeholder {
+  color: var(--text-dim);
+}
+
+/* ── Button styles ────────────────────────────────────────── */
+
+.btn-primary {
+  background: var(--cyan);
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary:hover {
+  background: #075985;
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-secondary {
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 14px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: 1px solid var(--border-dim);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  border-color: var(--border-base);
+}
+
+.btn-danger {
+  background: var(--red-dim);
+  color: var(--red);
+  font-weight: 600;
+  font-size: 14px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: 1px solid #b91c1c40;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-danger:hover {
+  background: #b91c1c20;
+  box-shadow: 0 0 8px var(--red-dim);
+}
+
+/* ── Accessibility: Focus rings ─────────────────────────────── */
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ── Accessibility: Reduced motion ────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .animate-pulse, .animate-spin, .animate-spin-slow {
+    animation: none !important;
+  }
+}
+
+/* ── Clickable cursor ─────────────────────────────────────── */
+
+button, [role="button"], a, select, .scenario-card {
+  cursor: pointer;
+}
+
+/* ── Resizable panels ─────────────────────────────────────── */
+
+[style*="resize: horizontal"] {
+  overflow: auto !important;
+}
+[style*="resize: horizontal"]::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+[style*="resize: horizontal"]::-webkit-scrollbar-thumb {
+  background: var(--border-base);
+  border-radius: 2px;
+}
+
+/* ── Tabular numbers for data ─────────────────────────────── */
+
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
+  font-variant-numeric: tabular-nums;
+}

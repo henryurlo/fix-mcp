@@ -1,0 +1,113 @@
+# Production trading system — all services on a single host.
+# Run:  docker compose up -d
+# MCP stdio:  docker compose run --rm mcp-server
+# REST API:   http://localhost:8000
+# Web UI:     http://localhost:3000
+#
+# NOTE: API (8000) and Web UI (3000) are bound to 0.0.0.0 (all interfaces)
+# so they are accessible from the host browser. PostgreSQL and Redis are
+# reachable only on the internal compose network (service names: postgres,
+# redis) — no host port binding. This avoids collisions with a native
+# Postgres/Redis on the host and keeps the unauthenticated infra unreachable
+# from outside the compose network.
+#
+# To access the DB from the host for debugging:
+#   docker compose exec postgres psql -U trading -d trading
+#   docker compose exec redis  redis-cli
+
+services:
+
+  # ── MCP stdio server (AI agent interface) ───────────────────────────────────
+  mcp-server:
+    build: .
+    container_name: fix-mcp-api
+    restart: unless-stopped
+    environment:
+      - SCENARIO=${SCENARIO:-morning_triage}
+      - FIX_MCP_CONFIG_DIR=/app/config
+      - OTEL_SERVICE_NAME=fix-mcp-api
+    volumes:
+      - ./config:/app/config:ro
+      - fix_logs:/opt/fix/logs
+    # This service is a stdio MCP process, not an HTTP server.
+    healthcheck:
+      disable: true
+
+  # ── REST API + event dispatcher ─────────────────────────────────────────────
+  api-server:
+    build: .
+    container_name: fix-mcp-api
+    restart: unless-stopped
+    command: ["python", "-m", "fix_mcp.api", "--host", "0.0.0.0", "--port", "8000"]
+    environment:
+      - SCENARIO=${SCENARIO:-morning_triage}
+      - FIX_MCP_CONFIG_DIR=/app/config
+      - OTEL_SERVICE_NAME=fix-mcp-api
+      - DATABASE_URL=postgresql://trading:***@postgres:5432/trading
+      - REDIS_URL=redis://redis:6379/0
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./config:/app/config:ro
+      - fix_logs:/opt/fix/logs
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=2).read()"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+  # ── Next.js Web Console (Mission Control) ───────────────────────────────────
+  console:
+    build:
+      context: .
+      dockerfile: Dockerfile.console
+    container_name: fix-mcp-console
+    restart: unless-stopped
+    environment:
+      - BACKEND_URL=http://api-server:8000
+    ports:
+      - "3000:3000"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3000').then((r)=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    depends_on:
+      - api-server
+
+  # ── PostgreSQL ───────────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: fix-mcp-postgres
+    environment:
+      POSTGRES_USER: trading
+      POSTGRES_PASSWORD: trading
+      POSTGRES_DB: trading
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U trading -d trading"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ── Redis ────────────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: fix-mcp-redis
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory", "512mb", "--maxmemory-policy", "allkeys-lru"]
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  postgres_data:
+  redis_data:
+  fix_logs:
