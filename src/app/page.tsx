@@ -329,7 +329,7 @@ function MissionControlTab({
   // Hints tracking
   const [hintsUsedCount, setHintsUsedCount] = useState(0);
   const [showTraining, setShowTraining] = useState(false);
-  const [trainingInitialTab, setTrainingInitialTab] = useState<'time' | 'score' | 'snapshot' | 'inject'>('time');
+  const [trainingInitialTab, setTrainingInitialTab] = useState<'time' | 'score' | 'snapshot' | 'inject'>('inject');
   const [heroAction, setHeroAction] = useState<'launching' | 'stressing' | 'workbook' | 'agent-run' | null>(null);
   const [showEvidenceBoard, setShowEvidenceBoard] = useState(false);
   const [completedStepAudit, setCompletedStepAudit] = useState<Array<{ step: number; title: string; tool: string; output: string; commands: Array<{ label: string; language: string; code: string }> }>>([]);
@@ -755,12 +755,12 @@ function MissionControlTab({
           <div className="flex items-center gap-2">
             {/* Training infrastructure toggle */}
             <div className="relative group">
-              <button onClick={() => { setTrainingInitialTab('time'); setShowTraining(!showTraining); }}
+              <button onClick={() => { setTrainingInitialTab('inject'); setShowTraining(!showTraining); }}
                 className={`flex items-center gap-1.5 px-2 py-1 rounded-md text-[12px] font-semibold transition-all ${showTraining ? 'bg-[var(--green-dim)] text-[var(--green)] border border-[var(--green)]/30' : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)]'}`}>
-                <GraduationCap size={13} /> Stress Test
+                <GraduationCap size={13} /> Test Controls
               </button>
               <div className="pointer-events-none invisible group-hover:visible absolute right-0 top-full mt-2 z-50 w-64 p-3 rounded-lg bg-[var(--bg-elevated)] border border-[var(--border-bright)] shadow-2xl">
-                <p className="text-[12px] text-[var(--text-secondary)] leading-relaxed">Opens controlled stress testing: inject a venue outage, reject spike, LULD halt, sequence gap, or SLA breach after the operator understands the base incident.</p>
+                <p className="text-[12px] text-[var(--text-secondary)] leading-relaxed">Opens the resilience test panel. Use it after the baseline recovery to add one controlled event, re-triage, and score whether the response stayed safe.</p>
               </div>
             </div>
             <button onClick={() => setFocusMode(!focusMode)}
@@ -952,7 +952,7 @@ function MissionControlTab({
               <div className={`bg-[var(--bg-base)] border-l border-[var(--border-dim)] flex flex-col h-full shrink-0 transition-all duration-300 overflow-hidden ${focusMode ? 'w-0 border-0' : 'w-[340px]'}`}>
                 <div className="px-3 py-2.5 border-b border-[var(--border-dim)]">
                   <div className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Operator Rail</div>
-                  <div className="text-[13px] font-semibold text-[var(--text-primary)] mt-0.5">{showTraining ? 'Stress Test Controls' : 'Next best action'}</div>
+                  <div className="text-[13px] font-semibold text-[var(--text-primary)] mt-0.5">{showTraining ? 'Resilience test controls' : 'Next best action'}</div>
                   <LiveTelemetryStrip />
                 </div>
                 <div className="p-2.5 space-y-2 border-b border-[var(--border-dim)]">
@@ -971,19 +971,19 @@ function MissionControlTab({
                   </button>
                   <div className="pt-2 mt-2 border-t border-[var(--border-dim)]">
                     <div className="flex items-center justify-between">
-                      <div className="text-[11px] font-bold uppercase tracking-wide text-[var(--amber)]">Stress test</div>
+                      <div className="text-[11px] font-bold uppercase tracking-wide text-[var(--amber)]">Resilience test</div>
                       <div className="text-[10px] text-[var(--text-dim)]">{allDone ? 'Ready' : 'after baseline'}</div>
                     </div>
-                    <p className="mt-1 text-[11px] leading-relaxed text-[var(--text-muted)]">Use this only to prove resilience after the base incident is understood or resolved.</p>
+                    <p className="mt-1 text-[11px] leading-relaxed text-[var(--text-muted)]">One extra event is injected after the normal recovery. The point is to prove the agent updates its plan instead of blindly continuing.</p>
                   </div>
                   <button onClick={startGuidedStress} disabled={heroAction !== null || !allDone}
-                    title={allDone ? 'Inject a controlled event and ask Copilot to re-triage.' : 'Finish the baseline workbook before injecting stress.'}
+                    title={allDone ? 'Inject one controlled event and ask Copilot to re-triage.' : 'Finish the baseline workbook before running a resilience test.'}
                     className="w-full rounded-lg border border-[var(--amber)]/40 bg-[var(--amber-dim)]/10 text-[var(--amber)] text-[12px] font-semibold py-2 px-3 flex items-center justify-center gap-1.5 hover:bg-[var(--amber-dim)]/20 disabled:opacity-50 disabled:cursor-not-allowed">
-                    {heroAction === 'stressing' ? <Loader2 size={12} className="animate-spin" /> : <FlaskConical size={12} />} Run Stress Test
+                    {heroAction === 'stressing' ? <Loader2 size={12} className="animate-spin" /> : <FlaskConical size={12} />} Run Resilience Test
                   </button>
                   <button onClick={() => { setTrainingInitialTab('inject'); setShowTraining(true); }}
                     className="w-full rounded-lg border border-[var(--border-dim)] bg-[var(--bg-surface)] text-[var(--text-secondary)] text-[12px] font-semibold py-2 px-3 flex items-center justify-center gap-1.5 hover:border-[var(--amber)]/40 hover:text-[var(--amber)]">
-                    <GraduationCap size={12} /> Configure Stress Test
+                    <GraduationCap size={12} /> Choose Test Event
                   </button>
                 </div>
 

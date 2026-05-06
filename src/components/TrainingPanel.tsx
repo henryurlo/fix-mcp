@@ -142,13 +142,21 @@ function TimeControlPanel() {
   }
 
   if (!status) return (
-    <div className="text-[13px] text-[var(--text-dim)] py-4 px-3 text-center">
-      Time control will be available once a scenario is active.
+    <div className="space-y-3">
+      <div className="rounded-md border border-[var(--border-dim)] bg-[var(--bg-surface)] p-3 text-[12px] text-[var(--text-secondary)] leading-relaxed">
+        Advanced clock control is only for rehearsing delayed ACKs, SLA pressure, and time-based triggers. Most demos do not need it.
+      </div>
+      <div className="text-[13px] text-[var(--text-dim)] py-4 px-3 text-center">
+        Clock control will be available once a scenario is active.
+      </div>
     </div>
   );
 
   return (
     <div className="space-y-3">
+      <div className="rounded-md border border-[var(--border-dim)] bg-[var(--bg-surface)] p-3 text-[12px] text-[var(--text-secondary)] leading-relaxed">
+        <b className="text-[var(--text-primary)]">Advanced clock control.</b> Use this only when the scenario depends on elapsed time: delayed ACKs, SLA breaches, stale market data, or timed recovery checks.
+      </div>
       {/* Current time display */}
       <div className="flex items-center gap-2">
         {status.is_paused ? (
@@ -252,10 +260,13 @@ function KPIScorePanel() {
   if (!report) return (
     <div className="text-center py-4 px-3">
       <BarChart3 size={24} className="text-[var(--text-dim)] mx-auto mb-2" />
-      <div className="text-[13px] text-[var(--text-muted)] mb-3">Score your scenario performance</div>
+      <div className="text-[13px] font-bold text-[var(--text-secondary)] mb-1">Score the response after the run</div>
+      <div className="text-[12px] text-[var(--text-muted)] mb-3 leading-relaxed">
+        This is not a game score. It is an audit summary: safe recovery, SLA breaches, client impact, and whether risky actions were approved.
+      </div>
       <button onClick={getScore} disabled={loading}
         className="py-2 px-6 rounded-lg bg-[var(--cyan)]/20 border border-[var(--cyan)]/40 text-[var(--cyan)] text-[13px] font-bold hover:bg-[var(--cyan)]/30 transition-all disabled:opacity-50">
-        {loading ? 'Computing...' : 'Compute Score'}
+        {loading ? 'Computing...' : 'Compute Result'}
       </button>
     </div>
   );
@@ -425,6 +436,9 @@ function SnapshotsPanel({ onRollback }: { onRollback: (id: string) => void }) {
 
   return (
     <div className="space-y-3">
+      <div className="rounded-md border border-[var(--border-dim)] bg-[var(--bg-surface)] p-3 text-[12px] text-[var(--text-secondary)] leading-relaxed">
+        <b className="text-[var(--text-primary)]">Restore points.</b> Save one before a risky manual action, then roll back if the injected event makes the run messy. This is for repeatable demos and QA, not the main operator path.
+      </div>
       {/* Save new snapshot */}
       <div className="flex gap-2">
         <input type="text" value={label} onChange={e => setLabel(e.target.value)}
@@ -509,7 +523,7 @@ function EventInjectionPanel() {
   return (
     <div className="space-y-3">
       <div className="rounded-md border border-[var(--border-dim)] bg-[var(--bg-surface)] p-3 text-[12px] text-[var(--text-secondary)] leading-relaxed">
-        Use this after the baseline incident is understood. Injection deliberately adds a second pressure signal so you can show whether the LLM notices changed state, updates the plan, and leaves evidence in Trace.
+        <b className="text-[var(--text-primary)]">Add one controlled event.</b> This is the main resilience test. First finish the baseline recovery, then inject one new pressure signal and ask the copilot to re-check state before taking more action.
       </div>
 
       {/* Event type selector */}
@@ -575,22 +589,35 @@ function EventInjectionPanel() {
 }
 
 // ─── Main Training Panel (tabs) ───
-export function TrainingPanel({ onRollback, initialTab = 'time' }: { onRollback: (id: string) => void; initialTab?: 'time' | 'score' | 'snapshot' | 'inject' }) {
+export function TrainingPanel({ onRollback, initialTab = 'inject' }: { onRollback: (id: string) => void; initialTab?: 'time' | 'score' | 'snapshot' | 'inject' }) {
   const [tab, setTab] = useState<'time' | 'score' | 'snapshot' | 'inject'>(initialTab);
   useEffect(() => setTab(initialTab), [initialTab]);
 
+  const activeTabHelp: Record<'time' | 'score' | 'snapshot' | 'inject', string> = {
+    inject: 'Main path: add one controlled event after baseline recovery, then re-triage.',
+    score: 'After the run: summarize safety, SLA, impact, and approval quality.',
+    snapshot: 'Advanced: save/restore state so demos and QA runs are repeatable.',
+    time: 'Advanced: move simulated market time for delayed ACKs and SLA scenarios.',
+  };
+
   return (
     <div className="h-full flex flex-col bg-[var(--bg-base)]">
+      <div className="px-3 py-2 border-b border-[var(--border-dim)] shrink-0">
+        <div className="text-[11px] font-bold uppercase tracking-wide text-[var(--text-dim)]">Resilience test</div>
+        <div className="mt-1 text-[12px] leading-relaxed text-[var(--text-secondary)]">
+          Normal flow: run baseline recovery → inject one event → re-check trace → compute result. Clock and restore points are advanced controls.
+        </div>
+      </div>
       {/* Tab bar */}
-      <div className="flex border-b border-[var(--border-dim)] px-3 pt-2 shrink-0">
+      <div className="flex border-b border-[var(--border-dim)] px-3 pt-2 shrink-0 overflow-x-auto">
         {([
-          ['time', 'Time', Clock],
-          ['score', 'Score', BarChart3],
-          ['snapshot', 'Snapshots', Save],
-          ['inject', 'Stress', Zap],
+          ['inject', '1 Event', Zap],
+          ['score', '2 Result', BarChart3],
+          ['snapshot', 'Restore', Save],
+          ['time', 'Clock', Clock],
         ] as const).map(([id, label, Icon]) => (
-          <button key={id} onClick={() => setTab(id)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-semibold transition-all border-b-2 ${
+          <button key={id} onClick={() => setTab(id)} title={activeTabHelp[id]}
+            className={`flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-semibold transition-all border-b-2 whitespace-nowrap ${
               tab === id 
                 ? 'border-[var(--cyan)] text-[var(--cyan)]' 
                 : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)]'
@@ -599,13 +626,16 @@ export function TrainingPanel({ onRollback, initialTab = 'time' }: { onRollback:
           </button>
         ))}
       </div>
+      <div className="px-3 py-2 border-b border-[var(--border-dim)] text-[11px] text-[var(--text-muted)] leading-relaxed shrink-0">
+        {activeTabHelp[tab]}
+      </div>
 
       {/* Tab content */}
       <div className="flex-1 overflow-y-auto p-3">
-        {tab === 'time' && <TimeControlPanel />}
+        {tab === 'inject' && <EventInjectionPanel />}
         {tab === 'score' && <KPIScorePanel />}
         {tab === 'snapshot' && <SnapshotsPanel onRollback={onRollback} />}
-        {tab === 'inject' && <EventInjectionPanel />}
+        {tab === 'time' && <TimeControlPanel />}
       </div>
     </div>
   );
