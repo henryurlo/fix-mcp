@@ -20,12 +20,12 @@ services:
   # ── MCP stdio server (AI agent interface) ───────────────────────────────────
   mcp-server:
     build: .
-    container_name: fix-mcp-api
+    container_name: fix-mcp-mcp
     restart: unless-stopped
     environment:
       - SCENARIO=${SCENARIO:-morning_triage}
       - FIX_MCP_CONFIG_DIR=/app/config
-      - OTEL_SERVICE_NAME=fix-mcp-api
+      - OTEL_SERVICE_NAME=fix-mcp-mcp
     volumes:
       - ./config:/app/config:ro
       - fix_logs:/opt/fix/logs
