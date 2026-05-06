@@ -1,6 +1,6 @@
 {
   "name": "midday_chaos_1205",
-  "severity": "Critical",
+  "severity": "critical",
   "difficulty": "advanced",
   "time": "12:05",
   "description": "Two unrelated concurrent incidents at midday: an algo with stuck child orders from stale BATS market data, and a pending-ack NYSE order threatened by a delayed-ACK backlog. Tests the operator's ability to triage, prioritize, and resolve without making things worse.",
@@ -246,5 +246,17 @@
   },
   "title": "Midday Chaos - TWAP MD Stale + ACK Backlog",
   "estimated_minutes": 25,
-  "simulated_time": "12:05"
+  "simulated_time": "12:05",
+  "categories": [
+    "orders",
+    "algo",
+    "market_data",
+    "session"
+  ],
+  "success_criteria": [
+    "Agent identifies two distinct root causes before any destructive action.",
+    "Agent does NOT cancel or replace ORD-NYSE-7731.",
+    "Children ORD-1005 and ORD-1006 release only after MD is fresh.",
+    "Final state: algo fills complete, NYSE order fills complete, no duplicate ClOrdIDs."
+  ]
 }

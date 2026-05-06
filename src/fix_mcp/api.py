@@ -654,14 +654,90 @@ async def api_reset(request: Request):
     return JSONResponse({"output": f"Scenario loaded: {active}", "scenario": active, "ok": True})
 
 
+_SCENARIO_SLUG_RE = re.compile(r"^[a-z0-9_]+$")
+
+
+async def _validate_custom_scenario(payload: dict[str, Any]) -> tuple[str | None, str | None]:
+    """Validate a scenario submitted through the authoring API.
+
+    This endpoint writes a JSON fixture that the ScenarioEngine can later load.
+    Validation is intentionally conservative: a saved scenario should be runnable,
+    not just a metadata shell that appears in the UI and fails during reset.
+    """
+    if not isinstance(payload, dict):
+        return None, "Scenario payload must be an object"
+
+    name = str(payload.get("name", "")).strip().lower()
+    if not name:
+        return None, "Scenario 'name' is required"
+    if not _SCENARIO_SLUG_RE.fullmatch(name):
+        return None, "Scenario 'name' must be a lowercase slug using only a-z, 0-9, and '_'"
+
+    for field in ("title", "description"):
+        if not str(payload.get(field, "")).strip():
+            return None, f"Scenario '{field}' is required"
+
+    sessions = payload.get("sessions")
+    if not isinstance(sessions, list) or not sessions:
+        return None, "Scenario 'sessions' must be a non-empty array"
+    required_session_fields = {"venue", "session_id", "sender_comp_id", "target_comp_id"}
+    for index, session in enumerate(sessions):
+        if not isinstance(session, dict):
+            return None, f"Scenario 'sessions[{index}]' must be an object"
+        missing = sorted(required_session_fields - session.keys())
+        if missing:
+            return None, f"Scenario 'sessions[{index}]' missing required fields: {', '.join(missing)}"
+
+    orders = payload.get("orders")
+    if not isinstance(orders, list) or not orders:
+        return None, "Scenario 'orders' must be a non-empty array"
+    required_order_fields = {
+        "order_id", "cl_ord_id", "symbol", "side", "quantity", "order_type",
+        "venue", "client_name", "created_at",
+    }
+    for index, order in enumerate(orders):
+        if not isinstance(order, dict):
+            return None, f"Scenario 'orders[{index}]' must be an object"
+        missing = sorted(required_order_fields - order.keys())
+        if missing:
+            return None, f"Scenario 'orders[{index}]' missing required fields: {', '.join(missing)}"
+
+    runbook = payload.get("runbook")
+    if not isinstance(runbook, dict):
+        return None, "Scenario 'runbook' must be an object"
+    steps = runbook.get("steps")
+    if not isinstance(steps, list) or not steps:
+        return None, "Scenario 'runbook.steps' must be a non-empty array"
+
+    valid_tools = {tool.name for tool in await server.list_tools()}
+    for index, step in enumerate(steps, start=1):
+        if not isinstance(step, dict):
+            return None, f"Runbook step {index} must be an object"
+        tool = str(step.get("tool", "")).strip()
+        if not tool:
+            return None, f"Runbook step {index} is missing 'tool'"
+        if tool not in valid_tools:
+            return None, f"Unknown runbook tool '{tool}' in step {index}"
+        if not isinstance(step.get("tool_args", {}), dict):
+            return None, f"Runbook step {index} 'tool_args' must be an object"
+
+    if not isinstance(payload.get("success_criteria"), list) or not payload["success_criteria"]:
+        return None, "Scenario 'success_criteria' must be a non-empty array"
+
+    return name, None
+
+
 @app.post("/api/scenario")
 async def api_scenario_post(request: Request):
     payload = await request.json()
-    name = payload.get("name", "").strip()
-    if not name:
-        return JSONResponse({"error": "Scenario 'name' is required"}, status_code=400)
-    # Sanitize name for filename
-    safe_name = re.sub(r"[^a-zA-Z0-9_]", "_", name).lower()
+    safe_name, error = await _validate_custom_scenario(payload)
+    if error:
+        return JSONResponse({"error": error}, status_code=400)
+    assert safe_name is not None
+
+    payload = dict(payload)
+    payload["name"] = safe_name
+
     config_dir = Path(server.engine.config_dir) / "scenarios"
     config_dir.mkdir(parents=True, exist_ok=True)
     filepath = config_dir / f"{safe_name}.json"

@@ -18,6 +18,9 @@ type RunbookStep = {
   expected: string;
 };
 
+type ScenarioSession = Record<string, unknown>;
+type ScenarioOrder = Record<string, unknown>;
+
 type ScenarioDraft = {
   name: string;
   title: string;
@@ -27,6 +30,8 @@ type ScenarioDraft = {
   estimated_minutes: number;
   categories: string[];
   simulated_time: string;
+  sessions: ScenarioSession[];
+  orders: ScenarioOrder[];
   runbook: {
     narrative: string;
     steps: RunbookStep[];
@@ -49,11 +54,47 @@ const TOOLS = [
 
 const CATEGORY_OPTIONS = ['session', 'orders', 'reference_data', 'algo', 'market_data', 'regulatory'];
 
+const DEFAULT_DRAFT_SESSIONS: ScenarioSession[] = [
+  {
+    venue: 'NYSE',
+    session_id: 'NYSE-CUSTOM-001',
+    sender_comp_id: 'FIRM_PROD',
+    target_comp_id: 'NYSE_GW',
+    status: 'active',
+    last_sent_seq: 100,
+    last_recv_seq: 200,
+    expected_recv_seq: 201,
+    last_heartbeat: '-30s',
+    latency_ms: 20,
+  },
+];
+
+const DEFAULT_DRAFT_ORDERS: ScenarioOrder[] = [
+  {
+    order_id: 'ORD-CUSTOM-001',
+    cl_ord_id: 'CLO-CUSTOM-001',
+    symbol: 'AAPL',
+    cusip: '037833100',
+    side: 'buy',
+    quantity: 100,
+    order_type: 'limit',
+    price: 180.25,
+    venue: 'NYSE',
+    client_name: 'Maple Capital',
+    status: 'new',
+    created_at: '-5m',
+    updated_at: '-5m',
+    flags: [],
+  },
+];
+
 function emptyDraft(): ScenarioDraft {
   return {
     name: '', title: '', description: '',
     severity: 'medium', difficulty: 'intermediate', estimated_minutes: 20,
     categories: [], simulated_time: '',
+    sessions: DEFAULT_DRAFT_SESSIONS.map((s) => ({ ...s })),
+    orders: DEFAULT_DRAFT_ORDERS.map((o) => ({ ...o })),
     runbook: { narrative: '', steps: [] },
     hints: { key_problems: [], diagnosis_path: '', common_mistakes: [] },
     success_criteria: [],
@@ -145,6 +186,12 @@ export function ScenarioCreator() {
       estimated_minutes: Number(parsed?.estimated_minutes ?? 20),
       categories: Array.isArray(parsed?.categories) ? parsed.categories : [],
       simulated_time: parsed?.simulated_time ?? '',
+      sessions: Array.isArray(parsed?.sessions)
+        ? parsed.sessions
+        : DEFAULT_DRAFT_SESSIONS.map((s) => ({ ...s })),
+      orders: Array.isArray(parsed?.orders)
+        ? parsed.orders
+        : DEFAULT_DRAFT_ORDERS.map((o) => ({ ...o })),
       runbook: {
         narrative: parsed?.runbook?.narrative ?? '',
         steps,

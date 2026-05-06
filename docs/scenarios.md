@@ -1,6 +1,6 @@
 # Trading Scenarios
 
-All 13 scenarios cover a complete simulated trading day from 02:05 ET to 16:32 ET plus three algo-specific scenarios that can occur during market hours.
+All 14 scenarios cover a complete simulated trading day from 02:05 ET to 16:32 ET plus three algo-specific scenarios that can occur during market hours.
 
 Load any scenario at runtime:
 
@@ -10,7 +10,7 @@ call_tool("list_scenarios", {"action": "load", "scenario_name": "morning_triage"
 
 ---
 
-## Regular Scenarios (10)
+## Regular Scenarios (11)
 
 ### `morning_triage`
 **Time:** 06:15 ET
@@ -96,6 +96,19 @@ call_tool("list_scenarios", {"action": "load", "scenario_name": "morning_triage"
 
 **Sessions:** NYSE active, BATS active, IEX active
 **Key flags:** `ssr_restricted` (RIDE short orders), `split_pending` (AAPL orders)
+
+---
+
+### `midday_chaos_1205`
+**Time:** 12:05 ET
+**Primary problems:**
+- AAPL TWAP has two stuck BATS child slices because BATS market data is 600ms stale.
+- NYSE order `ORD-NYSE-7731` is in `pending_ack` during a delayed ACK backlog.
+- Heartbeat status is misleading: NYSE is active, but duplicate-order risk exists if the order is cancel/replaced or resubmitted too early.
+
+**Sessions:** BATS active with stale market-data injection, NYSE active with `ack_delay_ms=5000`
+**Key flags:** `algo_child`, `algo_behind_schedule`, `pending_ack`, duplicate-risk via `check_pending_acks`
+**Why it matters:** This is the flagship evaluation scenario because it rewards careful diagnosis and penalizes unsafe blanket recovery.
 
 ---
 
